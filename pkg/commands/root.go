@@ -21,6 +21,7 @@ import (
 	"github.com/kubeflow/arena/pkg/commands/cron"
 	"github.com/kubeflow/arena/pkg/commands/data"
 	"github.com/kubeflow/arena/pkg/commands/evaluate"
+	"github.com/kubeflow/arena/pkg/commands/llm"
 	"github.com/kubeflow/arena/pkg/commands/model"
 	"github.com/kubeflow/arena/pkg/commands/serving"
 	"github.com/kubeflow/arena/pkg/commands/top"
@@ -70,5 +71,6 @@ func NewCommand() *cobra.Command {
 	command.AddCommand(evaluate.NewEvaluateCommand())
 	command.AddCommand(NewWhoamiCommand())
 	command.AddCommand(model.NewModelCommand())
+	command.AddCommand(llm.NewLLMCommand())
 	return command
 }
