@@ -1,5 +1,30 @@
 # Changelog
 
+## [v0.15.5](https://github.com/kubeflow/arena/tree/v0.15.5) (2026-05-07)
+
+### Features
+
+- feat(cli): add sub-command 'arena llm' as proxy to kubectl-rbg ([#1437](https://github.com/kubeflow/arena/pull/1437) by [@diw-zw](https://github.com/diw-zw))
+
+### Bug Fixes
+
+- fix: add ownerReferences to resources created by arena ([#1407](https://github.com/kubeflow/arena/pull/1407) by [@FAUST-BENCHOU](https://github.com/FAUST-BENCHOU))
+
+### Dependencies
+
+- chore(deps): bump github.com/spf13/cobra from 1.9.1 to 1.10.2 ([#1400](https://github.com/kubeflow/arena/pull/1400) by [@dependabot[bot]](https://github.com/apps/dependabot))
+- chore(deps): bump github.com/prometheus/common from 0.66.1 to 0.67.5 ([#1401](https://github.com/kubeflow/arena/pull/1401) by [@dependabot[bot]](https://github.com/apps/dependabot))
+
+### Misc
+
+- Add TensorFlow MNIST example ([#1405](https://github.com/kubeflow/arena/pull/1405) by [@ChenYi015](https://github.com/ChenYi015))
+- fix(pytorch-operator): update pytorch-operator image tag to 4598b3e-aliyun ([#1406](https://github.com/kubeflow/arena/pull/1406) by [@ChenYi015](https://github.com/ChenYi015))
+- build(docker): update PyTorch MNIST example Dockerfile ([#1408](https://github.com/kubeflow/arena/pull/1408) by [@ChenYi015](https://github.com/ChenYi015))
+- build(docker): update TensorFlow MNIST example Dockerfile ([#1409](https://github.com/kubeflow/arena/pull/1409) by [@ChenYi015](https://github.com/ChenYi015))
+- Update installer: package rbgctl into installer ([#1438](https://github.com/kubeflow/arena/pull/1438) by [@diw-zw](https://github.com/diw-zw))
+
+[Full Changelog](https://github.com/kubeflow/arena/compare/v0.15.4...v0.15.5)
+
 ## [v0.15.4](https://github.com/kubeflow/arena/tree/v0.15.4) (2026-01-09)
 
 ### Bug Fixes
