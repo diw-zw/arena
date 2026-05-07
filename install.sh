@@ -84,6 +84,14 @@ function set_sudo() {
     fi
 }
 
+# install rbgctl and rename arena-rbg
+function install_rbgctl() {
+    logger "debug" "start to install arena-rbg"
+    ${sudo_prefix} rm -rf /usr/local/bin/arena-rbg
+    ${sudo_prefix} cp $SCRIPT_DIR/bin/kubectl-rbg /usr/local/bin/arena-rbg
+    logger "debug" "succeed to install arena-rbg"
+}
+
 # install kubectl and rename arena-kubectl
 # install helm and rename arena-helm
 function install_kubectl_and_helm() {
@@ -278,6 +286,7 @@ function install_binary_on_master() {
 
 function binary() {
     install_kubectl_and_helm
+    install_rbgctl
     custom_charts
     install_arena_and_charts
     install_arena_gen_kubeconfig
