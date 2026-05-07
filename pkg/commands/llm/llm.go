@@ -22,14 +22,14 @@ import (
 	"github.com/spf13/cobra"
 )
 
-const rbgBinary = "kubectl-rbg"
+const rbgBinary = "arena-rbg"
 
-// NewLLMCommand returns a cobra command that proxies all args to `kubectl-rbg llm ...`.
+// NewLLMCommand returns a cobra command that proxies all args to `arena-rbg llm ...`.
 func NewLLMCommand() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:                "llm",
-		Short:              "LLM deployment management commands (powered by kubectl-rbg)",
-		Long:               `Commands for managing LLM model deployments. Requires 'kubectl-rbg' binary to be installed.`,
+		Short:              "LLM deployment management commands (powered by arena-rbg)",
+		Long:               `Commands for managing LLM model deployments. Requires 'arena-rbg' binary to be installed.`,
 		DisableFlagParsing: true,
 		SilenceUsage:       true,
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -39,7 +39,7 @@ func NewLLMCommand() *cobra.Command {
 	return cmd
 }
 
-// runRBG delegates execution to `kubectl-rbg llm <args...>`.
+// runRBG delegates execution to `arena-rbg llm <args...>`.
 func runRBG(args []string) error {
 	rbgPath, err := exec.LookPath(rbgBinary)
 	if err != nil {

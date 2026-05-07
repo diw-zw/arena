@@ -40,6 +40,7 @@ ARENA_ARTIFACTS_CHART_PATH ?= $(CURRENT_DIR)/arena-artifacts
 # Versions
 GOLANG_VERSION=$(shell grep -e '^go ' go.mod | cut -d ' ' -f 2)
 KUBECTL_VERSION ?= v1.28.4
+RBGCTL_VERSION ?= v0.7.0-alpha.3
 HELM_VERSION ?= $(shell grep -e 'helm.sh/helm/v3 ' go.mod | cut -d ' ' -f 2)
 HELM_UNITTEST_VERSION ?= 0.5.1
 KIND_VERSION ?= v0.23.0
@@ -51,6 +52,7 @@ GOLANGCI_LINT_VERSION ?= v2.1.6
 # Binaries
 ARENA ?= arena-v$(VERSION)-$(OS)-$(ARCH)
 KUBECTL ?= kubectl-$(KUBECTL_VERSION)-$(OS)-$(ARCH)
+RBGCTL ?= kubectl-rbg-$(OS)-$(ARCH)
 HELM ?= helm-$(HELM_VERSION)-$(OS)-$(ARCH)
 KIND ?= $(LOCALBIN)/kind-$(KIND_VERSION)
 ENVTEST ?= $(LOCALBIN)/setup-envtest-$(ENVTEST_VERSION)
@@ -233,13 +235,14 @@ build-dependabot:
 
 .PHONY: arena-installer
 arena-installer: $(ARENA_INSTALLER_TARBALL) ## Build arena installer tarball
-$(ARENA_INSTALLER_TARBALL): arena kubectl helm
+$(ARENA_INSTALLER_TARBALL): arena kubectl helm rbgctl
 	echo "Building arena installer tarball..." && \
 	rm -rf $(TEMPDIR)/$(ARENA_INSTALLER) && \
 	mkdir -p $(TEMPDIR)/$(ARENA_INSTALLER)/bin && \
 	cp $(LOCALBIN)/$(ARENA) $(TEMPDIR)/$(ARENA_INSTALLER)/bin/arena && \
 	cp $(LOCALBIN)/$(KUBECTL) $(TEMPDIR)/$(ARENA_INSTALLER)/bin/kubectl && \
 	cp $(LOCALBIN)/$(HELM) $(TEMPDIR)/$(ARENA_INSTALLER)/bin/helm && \
+	cp $(LOCALBIN)/$(RBGCTL) $(TEMPDIR)/$(ARENA_INSTALLER)/bin/kubectl-rbg && \
 	cp -R charts $(TEMPDIR)/$(ARENA_INSTALLER) && \
 	cp -R arena-artifacts $(TEMPDIR)/$(ARENA_INSTALLER) && \
 	cp arena-gen-kubeconfig.sh $(TEMPDIR)/$(ARENA_INSTALLER)/bin && \
@@ -271,7 +274,6 @@ kubectl: $(LOCALBIN)/$(KUBECTL)
 $(LOCALBIN)/$(KUBECTL): $(LOCALBIN) $(TEMPDIR)
 	$(eval KUBECTL_URL=https://dl.k8s.io/release/$(KUBECTL_VERSION)/bin/$(OS)/$(ARCH)/kubectl)
 	$(eval KUBECTL_SHA_URL=$(KUBECTL_URL).sha256)
-
 	cd $(TEMPDIR) && \
 	echo "Download $(KUBECTL) if not present..." && \
 	if [ ! -f $(KUBECTL) ]; then \
@@ -287,6 +289,27 @@ $(LOCALBIN)/$(KUBECTL): $(LOCALBIN) $(TEMPDIR)
 	chmod +x $(KUBECTL) && \
 	cp $(KUBECTL) $(LOCALBIN) && \
 	echo "Successfully installed kubectl to $(LOCALBIN)/$(KUBECTL)."
+
+.PHONY: rbgctl
+rbgctl: $(LOCALBIN)/$(RBGCTL)
+$(LOCALBIN)/$(RBGCTL): $(LOCALBIN) $(TEMPDIR)
+	$(eval RBGCTL_URL=https://github.com/sgl-project/rbg/releases/download/$(RBGCTL_VERSION)/kubectl-rbg-$(OS)-$(ARCH))
+	$(eval RBGCTL_SHA_URL=$(RBGCTL_URL).sha256)
+	cd $(TEMPDIR) && \
+	echo "Download $(RBGCTL) if not present..." && \
+	if [ ! -f $(RBGCTL) ]; then \
+		curl -sSLo $(RBGCTL) $(RBGCTL_URL); \
+	fi && \
+	echo "Download $(RBGCTL).sha256 if not present..." && \
+	if [ ! -f $(RBGCTL).sha256 ]; then \
+		curl -sSLo $(RBGCTL).sha256 $(RBGCTL_SHA_URL); \
+	fi && \
+	echo "Verifying checksum..." && \
+	echo -n "$$(awk '{print $$1}' $(RBGCTL).sha256)  $(RBGCTL)" | shasum -a 256 --check --quiet || (echo "Checksum verification failed, exiting." && false) && \
+	echo "Make rbgctl executable and move it to bin directory..." && \
+	chmod +x $(RBGCTL) && \
+	cp $(RBGCTL) $(LOCALBIN) && \
+	echo "Successfully installed rbgctl to $(LOCALBIN)/$(RBGCTL)."
 
 .PHONY: helm
 helm: $(LOCALBIN)/$(HELM)
